@@ -1,0 +1,46 @@
+Version: 1.0
+
+Create:
+  Guild: 'CREATE TABLE IF NOT EXISTS guild_data (guild_id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(16) NOT NULL, owner_id INTEGER);'
+  Members: 'CREATE TABLE IF NOT EXISTS guild_members (guild_id INTEGER, member_id INTEGER, rank VARCHAR(16), primary key(guild_id, member_id));'
+  ChunksData: 'CREATE TABLE IF NOT EXISTS guild_chunk_data (guild_id INTEGER, world_name VARCHAR(32) NOT NULL, x INTEGER, z INTEGER, primary key(world_name, x, z));'
+  Settings: 'CREATE TABLE IF NOT EXISTS guild_settings (guild_id INTEGER, flag VARCHAR(32), value VARCHAR(32), primary key(guild_id, flag));'
+  Flags: 'CREATE TABLE IF NOT EXISTS guild_flags (guild_id INTEGER, rank VARCHAR(16), flag VARCHAR(32), value VARCHAR(32), primary key(guild_id, rank, flag));'
+
+Select:
+  Guild: 'SELECT * FROM guild_data;'
+  Members: 'SELECT member_id,rank FROM guild_members WHERE guild_id = ?;'
+  ChunksData: 'SELECT world_name,x,z FROM guild_chunk_data WHERE guild_id = ?;'
+  Settings: 'SELECT flag,value FROM guild_settings WHERE guild_id = ?;'
+  Flags: 'SELECT rank,flag,value FROM guild_flags WHERE guild_id = ?;'
+
+Insert:
+  Guild: 'REPLACE INTO guild_data (name, owner_id) VALUES (?, ?);'
+  Members: 'REPLACE INTO guild_members (guild_id, member_id, rank) VALUES (?, ?, ?);'
+  ChunksData: 'INSERT INTO guild_chunk_data (guild_id, world_name, x, z) VALUES (?, ?, ?, ?);'
+  Settings: 'REPLACE INTO guild_settings (guild_id, flag, value) VALUES (?, ?, ?);'
+  Flags: 'REPLACE INTO guild_flags (guild_id, rank, flag, value) VALUES (?, ?, ?, ?);'
+
+Delete:
+  Guild: 'DELETE FROM guild_data WHERE guild_id = ?;'
+  ChunkEntry: 'DELETE FROM guild_chunk_data WHERE world_name = ? AND x = ? AND z = ?;'
+  ChunkData: 'DELETE FROM guild_chunk_data WHERE guild_id = ?;'
+  Member: 'DELETE FROM guild_members WHERE guild_id = ? AND member_id = ?A;'
+  MembersRank: 'DELETE FROM guild_members WHERE guild_id = ? AND rank = ?;'
+  MembersAll: 'DELETE FROM guild_members WHERE guild_id = ?;'
+  Settings: 'DELETE FROM guild_settings WHERE guild_id = ?;'
+  Flags: 'DELETE FROM guild_flags WHERE guild_id = ?;'
+
+MySQL:
+  Create:
+    Guild: 'CREATE TABLE IF NOT EXISTS guild_data (guild_id INTEGER PRIMARY KEY AUTO_INCREMENT, name VARCHAR(16) NOT NULL, owner_id INTEGER);'
+    Members: 'CREATE TABLE IF NOT EXISTS guild_members (guild_id INTEGER, member_id INTEGER, rank VARCHAR(16), primary key(guild_id, member_id));'
+    ChunksData: 'CREATE TABLE IF NOT EXISTS guild_chunk_data (guild_id INTEGER, world_name VARCHAR(32) NOT NULL, x INTEGER, z INTEGER, primary key(world_name, x, z));'
+    Settings: 'CREATE TABLE IF NOT EXISTS guild_settings (guild_id INTEGER, flag VARCHAR(32), value VARCHAR(32), primary key(guild_id, flag));'
+    Flags: 'CREATE TABLE IF NOT EXISTS guild_flags (guild_id INTEGER, rank VARCHAR(16), flag VARCHAR(16), value VARCHAR(32), primary key(guild_id, rank, flag));'
+  Insert:
+    Guild: 'INSERT INTO guild_data (name, owner_id) VALUES (?, ?);'
+    Members: 'INSERT INTO guild_members (guild_id, member_id, rank) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE rank = VALUES(rank);'
+    ChunksData: 'INSERT INTO guild_chunk_data (guild_id, world_name, x, z) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE guild_id = VALUES(guild_id);'
+    Settings: 'INSERT INTO guild_settings (guild_id, flag, value) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value);'
+    Flags: 'INSERT INTO guild_flags (guild_id, rank, flag, value) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value);'

@@ -1,0 +1,9 @@
+name: Guilds
+main: me.matamor.guilds.Guilds
+version: 1.0
+load: POSTWORLD
+api-version: 1.13
+softdepend:
+- WorldGuard
+depend:
+- CommonAPI
